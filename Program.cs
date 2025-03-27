@@ -5,49 +5,62 @@ using System.Text;
 
 DeviceClient deviceClient;
 string input = "";
-const string IOT_HUB_CONN_STRING = "HostName=test-iot-hub-001.azure-devices.net;DeviceId=device-1;SharedAccessKey=gSqLcENx1dbMRyBC77CeXvCBrE2zF+QNIbnKVssMkZ4=";
+string connectionString = "";
 const string IOT_HUB_DEVICE_LOCATION = "West Europe";
 const string IOT_HUB_DEVICE = "device-1";
 
 
+Console.WriteLine("Enter a connection string for Azure IoT Hub: ");
+connectionString = Console.ReadLine();
+
+try
+{
+    deviceClient = DeviceClient.CreateFromConnectionString(connectionString, TransportType.Mqtt);
+    Console.WriteLine("Successfuly connected to Azure IoT Hub.\n");
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"\n[Error] {DateTime.Now} >>> {ex.Message}\n");
+    return;
+}
+
 while (input != "0")
 {
-    using (deviceClient = DeviceClient.CreateFromConnectionString(IOT_HUB_CONN_STRING, TransportType.Mqtt))
+    Console.WriteLine("1. Send message to cloud");
+    Console.WriteLine("2. Send a random message over defined period of time ");
+    Console.WriteLine("3. List all desired properties");
+    Console.WriteLine("4. List all reported properties");
+    Console.WriteLine("5. Set reported properties");
+    Console.WriteLine("0. exit");
+    Console.WriteLine("\nPlease enter a number from [0-4]:");
+
+    input = Console.ReadLine();
+
+    switch (input)
     {
-        Console.WriteLine("1. Send message to cloud");
-        Console.WriteLine("2. Send a random message over defined period of time ");
-        Console.WriteLine("3. List all desired properties");
-        Console.WriteLine("4. List all reported properties");
-        Console.WriteLine("5. Set reported properties");
-        Console.WriteLine("0. exit");
-        Console.WriteLine("\nPlease enter a number from [0-4]:");
-
-        input = Console.ReadLine();
-
-        switch (input)
-        {
-            case "0":
-                break;
-            case "1":
-                await SendMessageToIoTHubAsync();
-                break;
-            case "2":
-                await SendRandomMessageOverTime();
-                break;
-            case "3":
-                await ListAllTwinDesiredProperties();
-                break;
-            case "4":
-                await ListAllTwinrReportedProperties();
-                break;
-            case "5":
-                await SetReportedTwinProperties();
-                break;
-            default:
-                Console.WriteLine("Please enter a valid number.");
-                break;
-        }
+        case "0":
+            break;
+        case "1":
+            await SendMessageToIoTHubAsync();
+            break;
+        case "2":
+            await SendRandomMessageOverTime();
+            break;
+        case "3":
+            await ListAllTwinDesiredProperties();
+            break;
+        case "4":
+            await ListAllTwinrReportedProperties();
+            break;
+        case "5":
+            await SetReportedTwinProperties();
+            break;
+        default:
+            Console.WriteLine("Please enter a valid number.");
+            break;
     }
+
+    deviceClient.Dispose();
 }
 
 async Task SendMessageToIoTHubAsync()
@@ -56,22 +69,23 @@ async Task SendMessageToIoTHubAsync()
 
     input = Console.ReadLine();
 
+    var payload = new AzureIotMessage
+    {
+        DeviceId = IOT_HUB_DEVICE,
+        Location = IOT_HUB_DEVICE_LOCATION,
+        Message = input,
+        Timestamp = DateTime.Now.ToString(),
+    };
+
+    string jsonPayload = JsonConvert.SerializeObject(payload);
+
+    var msg = new Message(Encoding.UTF8.GetBytes(jsonPayload));
+
+    Console.WriteLine($"\n[Info] {DateTime.Now} >>> Sending message: [{jsonPayload}]\n");
+
+
     try
     {
-        var payload = new AzureIotMessage
-        {
-            DeviceId = IOT_HUB_DEVICE,
-            Location = IOT_HUB_DEVICE_LOCATION,
-            Message = input,
-            Timestamp = DateTime.Now.ToString(),
-        };
-
-        string jsonPayload = JsonConvert.SerializeObject(payload);
-
-        var msg = new Message(Encoding.UTF8.GetBytes(jsonPayload));
-
-        Console.WriteLine($"\n[Info] {DateTime.Now} >>> Sending message: [{jsonPayload}]\n");
-
         await deviceClient.SendEventAsync(msg);
     }
     catch (Exception ex)
