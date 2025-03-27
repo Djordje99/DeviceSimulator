@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "DeviceSimulator": {
+      "commandName": "Project"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker"
+    }
+  }
+}
