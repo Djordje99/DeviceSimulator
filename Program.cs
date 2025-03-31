@@ -6,8 +6,10 @@ using System.Text;
 DeviceClient deviceClient;
 string input = "";
 string connectionString = "";
+bool isWorking = true;
 const string IOT_HUB_DEVICE_LOCATION = "West Europe";
 const string IOT_HUB_DEVICE = "device-1";
+
 
 
 Console.WriteLine("Enter a connection string for Azure IoT Hub: ");
@@ -31,6 +33,7 @@ while (input != "0")
     Console.WriteLine("3. List all desired properties");
     Console.WriteLine("4. List all reported properties");
     Console.WriteLine("5. Set reported properties");
+    Console.WriteLine("6. Set callback message handler");
     Console.WriteLine("0. exit");
     Console.WriteLine("\nPlease enter a number from [0-4]:");
 
@@ -55,13 +58,16 @@ while (input != "0")
         case "5":
             await SetReportedTwinProperties();
             break;
+        case "6":
+            await SetMessageHandler();
+            break;
         default:
             Console.WriteLine("Please enter a valid number.");
             break;
     }
-
-    deviceClient.Dispose();
 }
+
+deviceClient.Dispose();
 
 async Task SendMessageToIoTHubAsync()
 {
@@ -200,10 +206,28 @@ async Task SetReportedTwinProperties()
     await deviceClient.UpdateReportedPropertiesAsync(twinReportedCollection);
 }
 
+async Task SetMessageHandler()
+{
+    await deviceClient.SetReceiveMessageHandlerAsync(MessageReceivedAsync, null);
+}
+
+async Task MessageReceivedAsync(Message message, object userContext)
+{
+    string messageData = Encoding.UTF8.GetString(message.GetBytes());
+    CloudMessage cloudMessage = JsonConvert.DeserializeObject<CloudMessage>(messageData);
+
+    Console.WriteLine($"[Info] {DateTime.Now} Recieved Message >>>  {messageData}");
+}
+
 class AzureIotMessage()
 {
     public string DeviceId { get; set; }
     public string Location { get; set; }
     public string Message { get; set; }
     public string Timestamp { get; set; }
+}
+
+class CloudMessage
+{
+    public string Value { get; set; }
 }

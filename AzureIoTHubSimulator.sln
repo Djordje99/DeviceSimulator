@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35707.178 d17.12
+VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DeviceSimulator", "DeviceSimulator.csproj", "{6BA91A05-F463-4936-B661-7911D4974BB5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Device", "Device.csproj", "{6BA91A05-F463-4936-B661-7911D4974BB5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudBackend", "..\CloudBackend\CloudBackend.csproj", "{082D497E-573C-47CB-850D-65632849828E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{6BA91A05-F463-4936-B661-7911D4974BB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6BA91A05-F463-4936-B661-7911D4974BB5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6BA91A05-F463-4936-B661-7911D4974BB5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{082D497E-573C-47CB-850D-65632849828E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{082D497E-573C-47CB-850D-65632849828E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{082D497E-573C-47CB-850D-65632849828E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{082D497E-573C-47CB-850D-65632849828E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
